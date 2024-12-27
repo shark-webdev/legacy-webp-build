@@ -1,0 +1,77 @@
+/*
+src 参照元を指定
+dest 出力先を指定
+watch ファイル監視
+series(直列処理)とparallel(並列処理)
+*/
+const { src, dest, watch, series, parallel } = require('gulp');
+
+// 各プラグイン読み込み(オプションは各プラグインのサイトへ)
+// 汎用 ====================================
+const rename = require('gulp-rename'); // リネーム
+const del = require('del'); // 削除
+const changed = require('gulp-changed'); //ファイルの変更を検知する(lastRun関数はエラーが出やすい)
+
+// 画像圧縮 ====================================
+const imagemin = require('gulp-imagemin');
+const imageminMozjpeg = require('imagemin-mozjpeg');
+const imageminPngquant = require('imagemin-pngquant');
+const imageminSvgo = require('imagemin-svgo');
+
+// webP変換 ====================================
+const webP = require('gulp-webp');
+
+//参照元パス ====================================
+const srcPath = {
+  img   : 'src/**/*',
+  imgwp: 'src/**/*.{png,jpg,jpeg}',
+}
+
+//出力先パス ====================================
+const destPath = {
+  img   : 'dist/',
+  other : 'dist/',
+}
+
+// 画像圧縮 ====================================
+const imgImagemin = () => {
+  return src(srcPath.img)
+    .pipe(changed(srcPath.img))
+    .pipe(
+      imagemin(
+        [
+          imageminMozjpeg({ quality: 80 }),
+          imageminPngquant(),
+          imageminSvgo()
+        ],
+        { verbose: true }
+      )
+    )
+    .pipe(dest(destPath.img))
+ }
+
+// webP変換 ====================================
+const imgWebp = () => {
+  return src(srcPath.imgwp)
+    .pipe(rename(function (path) {
+      const ext = path.extname; // 現在の拡張子を取得
+      path.extname = '.webp'; // 新しい拡張子を .webp に設定
+      path.basename += ext; // 元の拡張子をファイル名に追加
+    }))
+    .pipe(webP())
+    .pipe(dest(destPath.img))
+}
+
+
+//一旦distディレクトリ内のファイルを削除 =====
+const clean = (done) => {
+  del.sync(destPath.other + '/**', !destPath.other);
+  done();
+}
+
+// 実行用 ====================================
+// npx gulpコマンドを実行した時、下記が実行される
+exports.default = series(
+  series(
+  clean, imgImagemin, imgWebp
+  ));
