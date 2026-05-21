@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+dest/
+src/*
+!src/.gitkeep
+.env
+.env.*
+*.log
+debug.log*
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+gulpfile.jsBK
+.DS_Store
+Thumbs.db
