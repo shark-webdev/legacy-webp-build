@@ -19,7 +19,7 @@ const hasSrcDirectory = () => existsSync('./src');
 
 const imageOptions = {
   jpg: { quality: 90, progressive: true, mozjpeg: true },
-  png: { compressionLevel: 9, effort: 10 },
+  png: { quality: 85, effort: 10, compressionLevel: 9 },
 };
 
 const normalizeImageExt = (extname) => {
