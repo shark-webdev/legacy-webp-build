@@ -3,6 +3,14 @@
 Gulp と sharp で画像を圧縮し、レガシー形式の WebP ファイル名も生成するビルド環境です。  
 `src` ディレクトリの画像は残したまま、処理後の画像を `dest` ディレクトリへ出力します。
 
+## 特徴
+
+- jpg / png を圧縮
+- `.jpg.webp` 形式で WebP を生成
+- `.htaccess` による自動切り替えに対応
+- Apache 環境向け
+- レガシー WordPress 案件向け
+
 ## 出力内容
 
 `pnpm build` または `legacy-webp-build.bat` を実行すると、次の順番で処理します。
@@ -88,11 +96,6 @@ pnpm clean
 - gulp-cli
 - del
 - sharp
-
-## 補足
-
-WebP のファイル名は `画像名 + 元拡張子 + .webp` です。  
-サーバー側で自動的に WebP を配信する場合は、この命名規則に合わせて `.htaccess` などを設定してください。
 
 ---
 
