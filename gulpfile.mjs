@@ -17,9 +17,30 @@ const destPath = {
 
 const hasSrcDirectory = () => existsSync('./src');
 
+// sharp設定 ====================================
+const sharpOptions = {
+  failOn: 'warning',
+  limitInputPixels: 12000 * 12000,
+};
+
 const imageOptions = {
-  jpg: { quality: 90, progressive: true, mozjpeg: true },
-  png: { quality: 85, effort: 10, compressionLevel: 9 },
+  jpg: {
+    quality: 92,
+    progressive: true,
+    mozjpeg: true,
+    chromaSubsampling: '4:4:4',
+  },
+  png: {
+    compressionLevel: 9,
+    effort: 10,
+  },
+};
+
+const webpOptions = {
+  quality: 92,
+  alphaQuality: 100,
+  effort: 6,
+  smartSubsample: true,
 };
 
 const normalizeImageExt = (extname) => {
@@ -35,8 +56,8 @@ const compressWithSharp = () => new Transform({
       return;
     }
 
-    if (file.isStream()) {
-      callback(new Error('Streaming is not supported.'));
+    if (!file.isBuffer()) {
+      callback(new Error(`${file.relative} is not a buffer.`));
       return;
     }
 
@@ -44,7 +65,7 @@ const compressWithSharp = () => new Transform({
     const format = outputExtname.slice(1);
 
     try {
-      file.contents = await sharp(file.contents)
+      file.contents = await sharp(file.contents, sharpOptions)
         .rotate()
         .toFormat(format === 'jpg' ? 'jpeg' : format, imageOptions[format])
         .toBuffer();
@@ -65,17 +86,17 @@ const convertToLegacyWebp = () => new Transform({
       return;
     }
 
-    if (file.isStream()) {
-      callback(new Error('Streaming is not supported.'));
+    if (!file.isBuffer()) {
+      callback(new Error(`${file.relative} is not a buffer.`));
       return;
     }
 
     const originalExtname = file.extname.toLowerCase();
 
     try {
-      file.contents = await sharp(file.contents)
+      file.contents = await sharp(file.contents, sharpOptions)
         .rotate()
-        .webp({ quality: 85 })
+        .webp(webpOptions)
         .toBuffer();
 
       file.basename = `${file.basename}${originalExtname}`;

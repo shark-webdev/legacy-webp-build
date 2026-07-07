@@ -86,9 +86,9 @@ pnpm clean
 
 | 形式 | 処理内容 |
 | --- | --- |
-| jpg / jpeg | quality 90、progressive JPEG、mozjpeg 有効、圧縮後の拡張子は `.jpg` に統一 |
+| jpg / jpeg | quality 92、progressive JPEG、mozjpeg 有効、圧縮後の拡張子は `.jpg` に統一 |
 | png | compressionLevel 9、effort 10 |
-| WebP | jpg / jpeg / png から quality 85 で生成 |
+| WebP | jpg / jpeg / png から quality 92 で生成 |
 
 ## 使用パッケージ
 
@@ -101,3 +101,4 @@ pnpm clean
 
 設計意図や制作メモはこちらです。  
 [Notion Portfolio](https://gelatinous-alligator-d9a.notion.site/Portfolio-2fe45c4eb2d980aca9e3e247af534dd9)
+
