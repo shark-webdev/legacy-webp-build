@@ -1,0 +1,17 @@
+# WebP の Content-Type を設定
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+</IfModule>
+
+# WebP 対応ブラウザに、同じディレクトリの「元画像名.webp」を配信
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_ACCEPT} "image/webp" [NC]
+  RewriteCond %{REQUEST_FILENAME}.webp -f
+  RewriteRule ^(.+)\.(jpe?g|png)$ $1.$2.webp [NC,T=image/webp,E=accept:1,L]
+</IfModule>
+
+# Accept ヘッダーによって応答が変わることを、ブラウザや CDN に通知
+<IfModule mod_headers.c>
+  Header merge Vary Accept env=REDIRECT_accept
+</IfModule>
